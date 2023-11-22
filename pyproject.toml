@@ -1,9 +1,12 @@
 [tool.poetry]
-name = "tv-show-recommender"
+name = "tv_show_recommender"
 version = "0.1.0"
 description = ""
 authors = ["Mavrick Laakso <laakso.mavrick@gmail.com>"]
 readme = "README.md"
+
+[tool.poetry.scripts]
+scrape-data = "scripts.scrape_data:start"
 
 [tool.poetry.dependencies]
 python = "^3.10"

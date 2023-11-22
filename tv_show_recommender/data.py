@@ -1,5 +1,6 @@
 import os
 import gzip
+from pathlib import Path
 
 import requests
 
@@ -7,6 +8,14 @@ OUTPUT_DIR = "data"
 IMDB_URL = "https://datasets.imdbws.com"
 TITLE_BASICS_FILE_NAME = "title.basics.tsv.gz"
 TITLE_RATINGS_FILE_NAME = "title.ratings.tsv.gz"
+
+# Create a script:
+# Generate list of ids every title that:
+# - is a tvSeries
+# - has numVotes > 10
+
+# For each title_id
+# Scrape all reviews { user_id, title_id, review_num } ...?
 
 
 def download_imdb_title_basics():
@@ -40,6 +49,9 @@ def _download(title_file_name):
     url = f"{IMDB_URL}/{title_file_name}"
 
     response = requests.get(url, stream=True)
+
+    filename = Path(out_file_path)
+    filename.touch(exist_ok=True)
 
     with open(out_file_path, "wb") as output:
         output.write(response.content)
