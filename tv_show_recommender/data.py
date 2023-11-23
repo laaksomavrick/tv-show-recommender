@@ -6,35 +6,35 @@ import requests
 
 OUTPUT_DIR = "data"
 IMDB_URL = "https://datasets.imdbws.com"
-TITLE_BASICS_FILE_NAME = "title.basics.tsv.gz"
-TITLE_RATINGS_FILE_NAME = "title.ratings.tsv.gz"
+TITLE_BASICS_ZIP_NAME = "title.basics.tsv.gz"
+TITLE_RATINGS_ZIP_NAME = "title.ratings.tsv.gz"
+TITLE_BASICS_FILE_NAME = "title.basics.tsv"
+TITLE_RATINGS_FILE_NAME = "title.ratings.tsv"
 
-# Create a script:
-# Generate list of ids every title that:
-# - is a tvSeries
-# - has numVotes > 10
 
-# For each title_id
-# Scrape all reviews { user_id, title_id, review_num } ...?
+def needs_retrieving():
+    has_basics = os.path.isfile(f"{OUTPUT_DIR}/{TITLE_BASICS_FILE_NAME}")
+    has_ratings = os.path.isfile(f"{OUTPUT_DIR}/{TITLE_RATINGS_FILE_NAME}")
+    return has_basics == False or has_ratings == False
 
 
 def download_imdb_title_basics():
-    _download(TITLE_BASICS_FILE_NAME)
+    _download(TITLE_BASICS_ZIP_NAME)
 
 
 def download_imdb_title_ratings():
-    _download(TITLE_RATINGS_FILE_NAME)
+    _download(TITLE_RATINGS_ZIP_NAME)
 
 
 def unzip_imdb_title_basics():
-    in_file_path = os.path.join(OUTPUT_DIR, TITLE_BASICS_FILE_NAME)
-    out_file_path = os.path.join(OUTPUT_DIR, "title.basics.tsv")
+    in_file_path = os.path.join(OUTPUT_DIR, TITLE_BASICS_ZIP_NAME)
+    out_file_path = os.path.join(OUTPUT_DIR, TITLE_BASICS_FILE_NAME)
     _decompress(in_file_path, out_file_path)
 
 
 def unzip_imdb_title_ratings():
-    in_file_path = os.path.join(OUTPUT_DIR, TITLE_RATINGS_FILE_NAME)
-    out_file_path = os.path.join(OUTPUT_DIR, "title.ratings.tsv")
+    in_file_path = os.path.join(OUTPUT_DIR, TITLE_RATINGS_ZIP_NAME)
+    out_file_path = os.path.join(OUTPUT_DIR, TITLE_RATINGS_FILE_NAME)
     _decompress(in_file_path, out_file_path)
 
 

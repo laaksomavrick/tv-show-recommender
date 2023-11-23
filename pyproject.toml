@@ -11,6 +11,8 @@ scrape-data = "scripts.scrape_data:start"
 [tool.poetry.dependencies]
 python = "^3.10"
 requests = "^2.31.0"
+scrapy = "^2.11.0"
+pandas = "^2.1.3"
 
 [tool.poetry.group.dev.dependencies]
 black = "^23.11.0"
