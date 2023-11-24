@@ -4,7 +4,7 @@ from pathlib import Path
 
 import requests
 
-OUTPUT_DIR = "data"
+OUTPUT_DIR = "data/files"
 IMDB_URL = "https://datasets.imdbws.com"
 TITLE_BASICS_ZIP_NAME = "title.basics.tsv.gz"
 TITLE_RATINGS_ZIP_NAME = "title.ratings.tsv.gz"

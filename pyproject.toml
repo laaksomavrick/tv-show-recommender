@@ -6,7 +6,7 @@ authors = ["Mavrick Laakso <laakso.mavrick@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.scripts]
-scrape-data = "scripts.scrape_data:start"
+get-show-ids = "data.get_show_ids:start"
 
 [tool.poetry.dependencies]
 python = "^3.10"
