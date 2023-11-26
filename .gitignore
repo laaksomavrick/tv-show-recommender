@@ -163,6 +163,7 @@ data/ratings/ratings/files/**/*.csv
 !data/files/ratings/.keep
 data/files/**/*.tsv
 data/files/**/*.gz
+data/files/**/*.csv
 data/files/ratings/**/*.csv
 
 .DS_Store

@@ -13,15 +13,6 @@ from data.data import (
 from os.path import join
 
 
-# Create a script:
-# Generate list of ids every title that:
-# - is a tvSeries
-# - has numVotes > 10
-
-# For each title_id
-# Scrape all reviews { user_id, title_id, review_num } ...?
-
-
 def start():
     if needs_retrieving():
         print("Downloading and unzipping files...")
@@ -43,8 +34,9 @@ def start():
         join="inner",
     )
     tv_with_enough_votes = tv_with_ratings[
-        (tv_with_ratings["numVotes"] > 700)
+        (tv_with_ratings["numVotes"] > 500)
         & (tv_with_ratings["primaryTitle"].notnull())
+        & (tv_with_ratings["isAdult"] == 0)
     ]
 
     sorted_tv_shows = tv_with_enough_votes.sort_values("numVotes", ascending=False)

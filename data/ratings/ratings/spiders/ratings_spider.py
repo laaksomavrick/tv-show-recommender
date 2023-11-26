@@ -9,72 +9,69 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from scrapy.http import TextResponse
 
-
-#  poetry run scrapy crawl ratings -a show_id=tt2078818
-#  poetry run scrapy crawl ratings -a show_id=tt0944947 # Game of Thrones
-#  poetry run scrapy shell "https://www.imdb.com/title/tt2078818/reviews"
-
+#  poetry run scrapy crawl ratings -a show_ids=...
 
 class RatingsSpider(scrapy.Spider):
     name = "ratings"
 
     custom_settings = {"COOKIES_ENABLED": False, "DOWNLOAD_DELAY": 2}
 
-    def __init__(self, show_id=None, *args, **kwargs):
+    def __init__(self, show_ids=None, *args, **kwargs):
         super(RatingsSpider, self).__init__(*args, **kwargs)
-        self.show_id = show_id
+        self.show_ids = show_ids.split(",")
         self.driver = webdriver.Chrome()
-        self.url = f"https://www.imdb.com/title/{self.show_id}/reviews?sort=reviewVolume&dir=desc&ratingFilter=0"
-        self.filename = f"ratings/files/{self.show_id}.csv"
 
     def start_requests(self):
-        # TODO: read list of ids
+        for show_id in self.show_ids:
+            print(f"Scraping show_id={show_id}")
 
-        print(f"Locating {self.url}")
+            url = f"https://www.imdb.com/title/{show_id}/reviews?sort=reviewVolume&dir=desc&ratingFilter=0"
 
-        self.driver.get(self.url)
-        self.load_all_reviews()
+            print(f"Locating {url}")
 
-        body = self.driver.page_source.encode("utf-8")
-        response = TextResponse(url=self.url, body=body, encoding="utf-8")
+            self.driver.get(url)
+            self.load_all_reviews()
 
-        self.parse(response)
+            body = self.driver.page_source.encode("utf-8")
+            response = TextResponse(url=url, body=body, encoding="utf-8")
+
+            self.parse(show_id, response)
+            sleep(0.25)
+
         self.driver.quit()
 
-    def parse(self, response):
-        self.parse_show_page(response)
-
-    def parse_show_page(self, response):
-        reviews = response.css(".lister-item-content")
-        num_reviews = len(reviews)
+    def parse(self, show_id, response):
+        filename = f"ratings/files/{show_id}.csv"
+        lister_item_content = response.css(".lister-item-content")
+        num_reviews = len(lister_item_content)
 
         print(f"Found review count={num_reviews}")
 
         rows = []
 
-        for i in range(0, num_reviews):
-            show_id = self.show_id
-            rating = (
-                response.css(".rating-other-user-rating")
-                .xpath(
-                    '//div[@class="lister-item-content"]//span[@class="rating-other-user-rating"]/span[1]/text()'
-                )[i]
-                .get()
-            )
+        for lister_item in lister_item_content:
+            print(f"Processing lister_item for show_id={show_id}")
+            maybe_rating = lister_item.css('span.rating-other-user-rating').css('span::text')
 
-            user_href = (
-                response.css(".display-name-link")
-                .xpath('//span[@class="display-name-link"]/a/@href')[i]
-                .get()
-            )
+            if len(maybe_rating) < 3:
+                continue 
+
+            rating = maybe_rating[2].get()
+            user_href = lister_item.css('.display-name-link').css('::attr(href)').get()
+
+            if user_href is None:
+                continue
+
             split_user_href = user_href.split("/")
             user_id = split_user_href[-2]
 
+            print(f"Appending show_id={show_id} user_id={user_id} rating={rating}")
             rows.append({"show_id": show_id, "user_id": user_id, "rating": rating})
 
         df = pd.DataFrame(rows)
-        df.to_csv(self.filename, index=False)
-        self.log(f"Saved file {self.filename}")
+        df.to_csv(filename, index=False)
+        self.log(f"Saved file {filename}")
+
 
     def load_all_reviews(self):
         more_reviews_iter = 0
@@ -85,14 +82,13 @@ class RatingsSpider(scrapy.Spider):
         while has_more_reviews is True and more_reviews_iter < 50:
             print(f"More reviews found on iter={more_reviews_iter}, loading more...")
             self.click_load_more()
-            sleep(2)
+            sleep(0.5)
             has_more_reviews = self.has_load_more()
             more_reviews_iter += 1
 
     def click_load_more(self):
         try:
-            # Find and click the "Load More" button
-            load_more_button = WebDriverWait(self.driver, 10).until(
+            load_more_button = WebDriverWait(self.driver, 2).until(
                 EC.presence_of_element_located(
                     (By.XPATH, "//button[text()='Load More']")
                 )
@@ -100,8 +96,7 @@ class RatingsSpider(scrapy.Spider):
 
             load_more_button.click()
 
-            # Wait for the button text to re-appear in the DOM after clicking
-            WebDriverWait(self.driver, 10).until(
+            WebDriverWait(self.driver, 2).until(
                 EC.text_to_be_present_in_element(
                     (By.XPATH, "//button[text()='Load More']"), "Load More"
                 )
@@ -111,7 +106,7 @@ class RatingsSpider(scrapy.Spider):
 
     def has_load_more(self):
         try:
-            load_more_buttons = WebDriverWait(self.driver, 10).until(
+            load_more_buttons = WebDriverWait(self.driver, 1).until(
                 EC.presence_of_all_elements_located(
                     (By.XPATH, "//button[text()='Load More']")
                 )
