@@ -1,0 +1,1 @@
+Place `pristine_ratings.csv` here post scraping and transforming from the `data` project.

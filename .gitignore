@@ -166,4 +166,6 @@ data/files/**/*.gz
 data/files/**/*.csv
 data/files/ratings/**/*.csv
 
+tv_show_recommender/data/*.csv
+
 .DS_Store
