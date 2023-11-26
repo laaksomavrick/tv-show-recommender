@@ -7,6 +7,8 @@ readme = "README.md"
 
 [tool.poetry.scripts]
 get-show-ids = "data.get_show_ids:start"
+aggregate-ratings = "data.aggregate_ratings:start"
+join-ratings-with-show-metadata = "data.join_ratings_with_show_metadata:start"
 
 [tool.poetry.dependencies]
 python = "^3.10"

@@ -11,6 +11,7 @@ from scrapy.http import TextResponse
 
 #  poetry run scrapy crawl ratings -a show_ids=...
 
+
 class RatingsSpider(scrapy.Spider):
     name = "ratings"
 
@@ -51,13 +52,15 @@ class RatingsSpider(scrapy.Spider):
 
         for lister_item in lister_item_content:
             print(f"Processing lister_item for show_id={show_id}")
-            maybe_rating = lister_item.css('span.rating-other-user-rating').css('span::text')
+            maybe_rating = lister_item.css("span.rating-other-user-rating").css(
+                "span::text"
+            )
 
             if len(maybe_rating) < 3:
-                continue 
+                continue
 
             rating = maybe_rating[2].get()
-            user_href = lister_item.css('.display-name-link').css('::attr(href)').get()
+            user_href = lister_item.css(".display-name-link").css("::attr(href)").get()
 
             if user_href is None:
                 continue
@@ -71,7 +74,6 @@ class RatingsSpider(scrapy.Spider):
         df = pd.DataFrame(rows)
         df.to_csv(filename, index=False)
         self.log(f"Saved file {filename}")
-
 
     def load_all_reviews(self):
         more_reviews_iter = 0

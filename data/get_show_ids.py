@@ -15,7 +15,7 @@ from os.path import join
 
 def start():
     if needs_retrieving():
-        print("Downloading and unzipping files...")
+        print("Downloading and unzipping ratings...")
         download_imdb_title_basics()
         download_imdb_title_ratings()
         unzip_imdb_title_basics()
