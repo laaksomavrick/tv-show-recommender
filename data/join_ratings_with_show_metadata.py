@@ -8,6 +8,14 @@ def snake_case(column_name):
     return column_name.lower().replace(" ", "_")
 
 
+def remove_tt_prefix(value):
+    return value.replace("tt", "")
+
+
+def remove_ur_prefix(value):
+    return value.replace("ur", "")
+
+
 def start():
     data_directory = "data/files"
     basics_file_path = join(data_directory, "shows.csv")
@@ -27,5 +35,8 @@ def start():
         re.sub(r"(?<!^)(?=[A-Z])", "_", col).lower()
         for col in ratings_with_show.columns
     ]
+
+    ratings_with_show["show_id"] = ratings_with_show["show_id"].apply(remove_tt_prefix)
+    ratings_with_show["user_id"] = ratings_with_show["user_id"].apply(remove_ur_prefix)
 
     ratings_with_show.to_csv(join(data_directory, "pristine_ratings.csv"), index=False)
