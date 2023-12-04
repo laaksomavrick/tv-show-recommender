@@ -5,6 +5,23 @@ import pandas as pd
 from sklearn.model_selection import StratifiedShuffleSplit
 
 
+def get_stratified_data():
+    data = get_all_data()
+    data["popularity"] = pd.cut(
+        data["num_votes"],
+        bins=[0, 25000, 50000, 100000, 250000, 500000, 1000000, np.inf],
+        labels=[1, 2, 3, 4, 5, 6, 7],
+    )
+    data["popularity"].hist()
+
+    strat_train_set, strat_test_set = stratified_shuffle(data, "popularity")
+
+    for set_ in (strat_train_set, strat_test_set):
+        set_.drop("popularity", axis=1, inplace=True)
+
+    return strat_train_set, strat_test_set
+
+
 def stratified_shuffle(data, column):
     split = StratifiedShuffleSplit(n_splits=1, test_size=0.2, random_state=42)
 
