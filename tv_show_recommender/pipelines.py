@@ -21,11 +21,13 @@ def get_basic_nn_pipeline():
             "num_votes",
         ]
     )
+    drop_duplicates = DropDuplicates(columns_to_drop_dupes=["user_id", "show_id"])
 
     pipeline = Pipeline(
         [
             ("add_is_liked_attr", add_is_liked_attr),
             ("drop_columns", drop_columns),
+            ("drop_duplicates", drop_duplicates),
         ]
     )
 

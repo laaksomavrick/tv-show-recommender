@@ -39,4 +39,13 @@ def start():
     ratings_with_show["show_id"] = ratings_with_show["show_id"].apply(remove_tt_prefix)
     ratings_with_show["user_id"] = ratings_with_show["user_id"].apply(remove_ur_prefix)
 
+    basics_df["show_id"] = basics_df["tconst"]
+    basics_df = basics_df.drop(columns=["tconst"])
+    basics_df["show_id"] = basics_df["show_id"].apply(remove_tt_prefix)
+
+    basics_df.columns = [
+        re.sub(r"(?<!^)(?=[A-Z])", "_", col).lower() for col in basics_df.columns
+    ]
+
     ratings_with_show.to_csv(join(data_directory, "pristine_ratings.csv"), index=False)
+    basics_df.to_csv(join(data_directory, "pristine_shows.csv"), index=False)

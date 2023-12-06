@@ -45,6 +45,11 @@ def get_all_data():
     return _get_ratings_data()
 
 
+def get_show_data():
+    project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    return pd.read_csv(os.path.join(project_root, "data/pristine_shows.csv"))
+
+
 def _get_ratings_data():
     project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     return pd.read_csv(os.path.join(project_root, "data/pristine_ratings.csv"))
