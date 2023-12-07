@@ -168,4 +168,6 @@ data/files/ratings/**/*.csv
 
 tv_show_recommender/data/*.csv
 
+tv_show_recommender_nn.joblib
+
 .DS_Store

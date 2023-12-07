@@ -5,8 +5,8 @@ import pandas as pd
 from sklearn.model_selection import StratifiedShuffleSplit
 
 
-def get_stratified_data():
-    data = get_all_data()
+def get_stratified_data(data=None):
+    data = data or get_all_data()
     data["popularity"] = pd.cut(
         data["num_votes"],
         bins=[0, 25000, 50000, 100000, 250000, 500000, 1000000, np.inf],

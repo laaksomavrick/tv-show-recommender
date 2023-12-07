@@ -24,12 +24,14 @@ def get_basic_nn_pipeline():
         ]
     )
     drop_duplicates = DropDuplicates(columns_to_drop_dupes=["user_id", "show_id"])
+    pivot_show_ids = PivotShowIds()
 
     pipeline = Pipeline(
         [
             ("add_is_liked_attr", add_is_liked_attr),
             ("drop_columns", drop_columns),
             ("drop_duplicates", drop_duplicates),
+            ("pivot_show_ids", pivot_show_ids),
         ]
     )
 
